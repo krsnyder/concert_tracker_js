@@ -1,14 +1,23 @@
-const http = require("node:http");
+import express from "express";
+import bands from "./data/reader.js";
 
-const hostname = "127.0.0.1";
-const port = 3000;
+const app = express();
 
-const server = http.createServer((req, res) => {
-  res.statusCode = 200;
-  res.setHeader("Content-type", "text/plain");
-  res.end("Hello World");
-});
+app.listen(3000, listening);
 
-server.listen(port, hostname, () => {
-  console.log(`Server running at http://${hostname}:${port}`);
-});
+function listening() {
+  console.log("Listening..........");
+}
+
+app.use(express.static("websites"));
+
+app.get("/shows/:band", getShows);
+
+function getShows(req, res) {
+  var search_band = req.params.band;
+  if (search_band in bands) {
+    res.send(`You've seen ${search_band} ${bands[search_band]} times!`);
+  } else {
+    res.send(`You've never seen ${search_band}!`);
+  }
+}
